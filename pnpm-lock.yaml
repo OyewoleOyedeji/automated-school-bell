@@ -1,0 +1,22 @@
+lockfileVersion: 5.4
+
+specifiers:
+  '@types/node': ^18.11.18
+  date-fns: ^2.29.3
+
+dependencies:
+  date-fns: 2.29.3
+
+devDependencies:
+  '@types/node': 18.11.18
+
+packages:
+
+  /@types/node/18.11.18:
+    resolution: {integrity: sha512-DHQpWGjyQKSHj3ebjFI/wRKcqQcdR+MoFBygntYOZytCqNfkd2ZC4ARDJ2DQqhjH5p85Nnd3jhUJIXrszFX/JA==}
+    dev: true
+
+  /date-fns/2.29.3:
+    resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==}
+    engines: {node: '>=0.11'}
+    dev: false

@@ -1,0 +1,21 @@
+{
+  "name": "automated-school-bell-system",
+  "version": "1.0.0",
+  "description": "An automated system for sending network requests to ring the bells in my school",
+  "main": "main.js",
+  "scripts": {
+    "start": "pnpm exec tsc && node main.js",
+    "dev": "tsc --watch"
+  },
+  "keywords": [
+    "automation"
+  ],
+  "author": "OyewoleOyedeji",
+  "license": "ISC",
+  "dependencies": {
+    "date-fns": "^2.29.3"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.18"
+  }
+}

@@ -1,5 +1,21 @@
-import { times, targets } from "./config.json";
 import { setHours, isAfter, differenceInMilliseconds, format } from "date-fns";
+import { readFileSync, existsSync } from "fs";
+import { resolve } from "path";
+import { exit } from "process";
+
+let times: string[] = [];
+
+const configPath = resolve("./config.json");
+
+if (existsSync(configPath)) {
+  const { times: configTimes }: { times: string[] } = JSON.parse(
+    readFileSync(configPath, { encoding: "utf-8" })
+  );
+  times = configTimes;
+} else {
+  console.log("Couldn't find a configuration file in the same directory");
+  exit(1);
+}
 
 /**
  * Contains everything needed during the entire runtime of this project.
@@ -8,7 +24,6 @@ import { setHours, isAfter, differenceInMilliseconds, format } from "date-fns";
 class Project {
   constructor() {
     times.length === 0 ? null : (this.config.times = times);
-    targets.length === 0 ? null : (this.config.targets = targets);
 
     if (this.config.times)
       // Convert times provided into a usable format

@@ -13,9 +13,11 @@
   "author": "OyewoleOyedeji",
   "license": "ISC",
   "dependencies": {
-    "date-fns": "^2.29.3"
+    "date-fns": "^2.29.3",
+    "play-sound": "^1.1.5"
   },
   "devDependencies": {
-    "@types/node": "^18.11.18"
+    "@types/node": "^18.11.18",
+    "@types/play-sound": "^1.1.0"
   }
 }

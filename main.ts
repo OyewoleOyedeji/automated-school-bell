@@ -1,19 +1,47 @@
-import { setHours, isAfter, differenceInMilliseconds, format } from "date-fns";
-import { readFileSync, existsSync } from "fs";
+import {
+  setHours,
+  isAfter,
+  differenceInMilliseconds,
+  format,
+  setSeconds,
+} from "date-fns";
+import { readFileSync, existsSync, appendFileSync, rmSync } from "fs";
 import { resolve } from "path";
 import { exit } from "process";
+import player from "play-sound";
 
 let times: string[] = [];
 
-const configPath = resolve("./config.json");
+const configPath = resolve("config.json");
+const logPath = resolve("runtime-error.log");
+
+const writeFile = (filename: string, contents: string) => {
+  if (existsSync(logPath)) rmSync(logPath);
+
+  appendFileSync(filename, contents, "utf8");
+};
 
 if (existsSync(configPath)) {
   const { times: configTimes }: { times: string[] } = JSON.parse(
     readFileSync(configPath, { encoding: "utf-8" })
   );
+
+  if (!configTimes) {
+    writeFile(
+      "runtime-error.log",
+      `[ERROR] Couldn't find a times property in the ${configPath} file`
+    );
+    console.error(`Please check ${logPath} for more details`);
+    exit(1);
+  }
+
   times = configTimes;
 } else {
-  console.log("Couldn't find a configuration file in the same directory");
+  writeFile(
+    "runtime-error.log",
+    `[ERROR] Couldn't find a configuration file at ${resolve()}`
+  );
+  console.error(`Please check ${logPath} for more details`);
   exit(1);
 }
 
@@ -23,24 +51,31 @@ if (existsSync(configPath)) {
  */
 class Project {
   constructor() {
-    times.length === 0 ? null : (this.config.times = times);
-
-    if (this.config.times)
+    if (times.length > 0) {
       // Convert times provided into a usable format
       times.forEach((time) => {
         const hour: number = new Number(time.split(":")[0]);
         const minutes: number = new Number(time.split(":")[1]);
 
+        // Set the amount of hours, minutes and seconds before appending date to <this.times.raw: number[]>
         this.times.raw.push(
-          setHours(this.startupTime, hour).setMinutes(minutes)
+          setSeconds(
+            new Date(setHours(this.startupTime, hour).setMinutes(minutes)),
+            0
+          ).getTime()
         );
       });
+      // Sort <this.times.raw: number[]> in ascending order
+      this.times.raw.sort();
 
-    // Sort the raw times in ascending order
-    this.times.raw.sort();
+      // Filter the times, that can be used
+      this.times.raw.forEach((time) => {
+        if (isAfter(time, this.startupTime)) {
+          this.times.considered.push(time);
+        }
+      });
+    }
   }
-
-  config: { times?: string[] | null; targets?: string[] } = {};
   times: {
     considered: Array<number>;
     raw: Array<number>;
@@ -57,24 +92,18 @@ class Project {
 
 const project = new Project();
 
-// Filter the times, that can be used
-project.times.raw.forEach((time) => {
-  if (isAfter(time, project.startupTime)) {
-    project.times.considered.push(time);
-  }
-});
-
 /**
  * This method gets called after a wait event has finished.
  *
  * Note: this method cleans up `Project` of unneeded variables
- * @returns
  */
 const postWait = () => {
-  console.log(`Executed on ${format(new Date(), "k:mm")}`);
+  console.log(`Executed on ${format(new Date(), "k:mm:ss")}`);
+
+  player().play("drop.mp3", (err) => console.error(err));
 
   if (project.times.considered.length === 0) {
-    ["startupTime", "times", "status", "config"].forEach((key) =>
+    ["startupTime", "times", "status"].forEach((key) =>
       key ? delete project[key] : null
     );
     return;
@@ -94,7 +123,10 @@ const wait = () => {
   project.status = new Date();
 
   console.log(
-    `Executing next payload in ${format(project.times.considered[0], "k:mm")}`
+    `Executing next payload in ${format(
+      project.times.considered[0],
+      "k:mm:ss"
+    )}`
   );
 
   const timeToWait = differenceInMilliseconds(
@@ -108,4 +140,5 @@ const wait = () => {
   }, timeToWait);
 };
 
-if (project.config.times && project.times.considered.length > 0) wait();
+if (project.times.considered.length > 0) wait();
+else console.log("Couldn't find an alarm");

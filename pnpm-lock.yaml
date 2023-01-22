@@ -2,13 +2,17 @@ lockfileVersion: 5.4
 
 specifiers:
   '@types/node': ^18.11.18
+  '@types/play-sound': ^1.1.0
   date-fns: ^2.29.3
+  play-sound: ^1.1.5
 
 dependencies:
   date-fns: 2.29.3
+  play-sound: 1.1.5
 
 devDependencies:
   '@types/node': 18.11.18
+  '@types/play-sound': 1.1.0
 
 packages:
 
@@ -16,7 +20,23 @@ packages:
     resolution: {integrity: sha512-DHQpWGjyQKSHj3ebjFI/wRKcqQcdR+MoFBygntYOZytCqNfkd2ZC4ARDJ2DQqhjH5p85Nnd3jhUJIXrszFX/JA==}
     dev: true
 
+  /@types/play-sound/1.1.0:
+    resolution: {integrity: sha512-v+ggBleNpLah+RDTuyFsYjBGnAwULcJD2mjdP/X4ICsu3HPcOmCktZnfgwQ9UECS+01d5MCm1+YYip2R/iIX0g==}
+    dependencies:
+      '@types/node': 18.11.18
+    dev: true
+
   /date-fns/2.29.3:
     resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==}
     engines: {node: '>=0.11'}
+    dev: false
+
+  /find-exec/1.0.2:
+    resolution: {integrity: sha512-/cs763F5i7Nm/aG+hjBv2nJB/Bl2w0tnuZd5bbfcV+WYapn8T4ez3B87H6MgvsmdheDkitj/rHi557wvE+XylQ==}
+    dev: false
+
+  /play-sound/1.1.5:
+    resolution: {integrity: sha512-gbdF1iLNyL5r9Ne9YwARGMkrvfR4EL9G1ZLtFPLkI2tQt0kkHw5CHM5E6Gl/lDuuk/Uj/O5Q29Bi08jMK4egbA==}
+    dependencies:
+      find-exec: 1.0.2
     dev: false

@@ -2,54 +2,57 @@ import {
   setHours,
   isAfter,
   differenceInMilliseconds,
-  format,
   setSeconds,
 } from "date-fns";
-import { readFileSync, existsSync, appendFileSync, rmSync } from "fs";
-import { resolve } from "path";
+import { readFileSync, existsSync, writeFileSync } from "fs";
+import { resolve, isAbsolute } from "path";
 import { exit } from "process";
 import player from "play-sound";
 
 let times: string[] = [];
+let notificationSoundPath: string;
 
 const configPath = resolve("config.json");
 const logPath = resolve("runtime-error.log");
 
-const writeFile = (filename: string, contents: string) => {
-  if (existsSync(logPath)) rmSync(logPath);
-
-  appendFileSync(filename, contents, "utf8");
+const writeLogFile = (content: string) => {
+  writeFileSync("runtime-error.log", content);
+  console.error(`Please check ${logPath} for more details`);
+  exit(1);
 };
 
 if (existsSync(configPath)) {
-  const { times: configTimes }: { times: string[] } = JSON.parse(
+  const {
+    times: configTimes,
+    notificationSound,
+  }: { times: string[]; notificationSound: string } = JSON.parse(
     readFileSync(configPath, { encoding: "utf-8" })
   );
 
-  if (!configTimes) {
-    writeFile(
-      "runtime-error.log",
-      `[ERROR] Couldn't find a times property in the ${configPath} file`
+  if (!notificationSound)
+    writeLogFile(
+      `[ERROR] Couldn't find the path to the sound for the notifications in the ${configPath}`
     );
-    console.error(`Please check ${logPath} for more details`);
-    exit(1);
-  }
+
+  if (!configTimes)
+    writeLogFile(`[ERROR] Couldn't find a times property in the ${configPath}`);
+
+  isAbsolute(notificationSound)
+    ? (notificationSoundPath = notificationSound)
+    : (notificationSoundPath = resolve(notificationSound));
+
+  if (!existsSync(notificationSoundPath))
+    writeLogFile(`[ERROR] The sound file for notifications doesn't exist`);
 
   times = configTimes;
-} else {
-  writeFile(
-    "runtime-error.log",
-    `[ERROR] Couldn't find a configuration file at ${resolve()}`
-  );
-  console.error(`Please check ${logPath} for more details`);
-  exit(1);
-}
+} else
+  writeLogFile(`[ERROR] Couldn't find a configuration file at ${resolve()}`);
 
 /**
  * Contains everything needed during the entire runtime of this project.
  * E.g; config, times, startupTime, etc.
  */
-class Project {
+class Runtime {
   constructor() {
     if (times.length > 0) {
       // Convert times provided into a usable format
@@ -90,21 +93,19 @@ class Project {
   status?: Date;
 }
 
-const project = new Project();
+const runtime = new Runtime();
 
 /**
  * This method gets called after a wait event has finished.
  *
- * Note: this method cleans up `Project` of unneeded variables
+ * Note: this method cleans up `Runtime` of unneeded variables
  */
 const postWait = () => {
-  console.log(`Executed on ${format(new Date(), "k:mm:ss")}`);
+  player().play(notificationSoundPath);
 
-  player().play("drop.mp3", (err) => console.error(err));
-
-  if (project.times.considered.length === 0) {
+  if (runtime.times.considered.length === 0) {
     ["startupTime", "times", "status"].forEach((key) =>
-      key ? delete project[key] : null
+      key ? delete runtime[key] : null
     );
     return;
   }
@@ -120,25 +121,18 @@ const postWait = () => {
  * the most recent time and executes postWait as a callback
  */
 const wait = () => {
-  project.status = new Date();
-
-  console.log(
-    `Executing next payload in ${format(
-      project.times.considered[0],
-      "k:mm:ss"
-    )}`
-  );
+  runtime.status = new Date();
 
   const timeToWait = differenceInMilliseconds(
-    project.times.considered[0],
-    project.status
+    runtime.times.considered[0],
+    runtime.status
   );
 
   setTimeout(() => {
-    project.times.done.push(project.times.considered.shift() as number);
+    runtime.times.done.push(runtime.times.considered.shift() as number);
     postWait();
   }, timeToWait);
 };
 
-if (project.times.considered.length > 0) wait();
+if (runtime.times.considered.length > 0) wait();
 else console.log("Couldn't find an alarm");

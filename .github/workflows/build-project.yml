@@ -17,7 +17,7 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: 12
-    - run: npm install -g pnpm@5
+    - run: npm update -g npm && npm install -g pnpm@5
     - run: pnpm install
     - run: pnpm run build
     - run: pnpm run pkg -t node12-win --out-path dist main.js
@@ -32,7 +32,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 12
-      - run: npm install -g pnpm@5
+      - run: npm update -g npm && npm install -g pnpm@5
       - run: pnpm install
       - run: pnpm run build
       - run: pnpm run pkg -t node12-linux --out-path dist main.js

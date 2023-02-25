@@ -2,27 +2,25 @@ name: Build project
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build-windows:
-
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js 12
-      uses: actions/setup-node@v3
-      with:
-        node-version: 12
-    - run: npm install
-    - run: npm run build
-    - run: npm run pkg -t node12-win --out-path dist main.js
-  
-  build-linux:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 12
+        uses: actions/setup-node@v3
+        with:
+          node-version: 12
+      - run: npm install
+      - run: npm run build:windows
+      - run: npm run pkg -t node12-win --out-path dist main.js
 
+  build-linux:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,5 +32,4 @@ jobs:
         with:
           node-version: 12
       - run: npm install
-      - run: npm run build
-      - run: npm run pkg -t node12-linux --out-path dist main.js
+      - run: npm run build:linux

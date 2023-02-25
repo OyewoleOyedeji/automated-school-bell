@@ -1,11 +1,12 @@
 {
-  "name": "automated-school-bell-system",
+  "name": "automated-school-bell",
   "version": "1.0.0",
-  "description": "An automated system for sending network requests to ring the bells in my school",
+  "description": "An automated system for ringing the bells in my school",
   "main": "main.js",
   "scripts": {
-    "start": "pnpm exec tsc && node main.js",
-    "dev": "tsc --watch"
+    "start": "tsc && node main.js",
+    "dev": "tsc --watch",
+    "build": "tsc"
   },
   "keywords": [
     "automation"
@@ -23,5 +24,8 @@
   },
   "devDependencies": {
     "typescript": "^4.9.5"
+  },
+  "engines": {
+    "node": "12.22.12"
   }
 }

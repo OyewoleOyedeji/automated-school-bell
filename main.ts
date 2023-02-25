@@ -56,8 +56,8 @@ class Runtime {
     if (times.length > 0) {
       // Convert times provided into a usable format
       times.forEach((time) => {
-        const hour: number = new Number(time.split(":")[0]);
-        const minutes: number = new Number(time.split(":")[1]);
+        const hour: number = parseInt(time.split(":")[0]);
+        const minutes: number = parseInt(time.split(":")[1]);
 
         // Set the amount of hours, minutes and seconds before appending date to <this.times.raw: number[]>
         this.times.raw.push(
@@ -108,12 +108,7 @@ const postWait = () => {
     .pipe(new lame.Decoder())
     .pipe(new Speaker());
 
-  if (runtime.times.considered.length === 0) {
-    ["startupTime", "times", "status"].forEach((key) =>
-      key ? delete runtime[key] : null
-    );
-    return;
-  }
+  if (runtime.times.considered.length === 0) return;
 
   wait();
 };

@@ -17,11 +17,9 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: 12
-        cache: 'npm'
-    - run: npm update -g npm && npm install -g pnpm@5
-    - run: pnpm install
-    - run: pnpm run build
-    - run: pnpm run pkg -t node12-win --out-path dist main.js
+    - run: npm install
+    - run: npm run build
+    - run: npm run pkg -t node12-win --out-path dist main.js
   
   build-linux:
 
@@ -33,9 +31,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 12
-          cache: 'npm'
       - run: apt-get install libasound2-dev
-      - run: npm install -g pnpm@5
-      - run: pnpm install
-      - run: pnpm run build
-      - run: pnpm run pkg -t node12-linux --out-path dist main.js
+      - run: npm install
+      - run: npm run build
+      - run: npm run pkg -t node12-linux --out-path dist main.js

@@ -6,7 +6,8 @@
   "scripts": {
     "start": "tsc && node main.js",
     "dev": "tsc --watch",
-    "build": "tsc"
+    "build:windows": "tsc",
+    "build:linux": "tsc && pkg -t node12-linux --out-path dist main.js"
   },
   "keywords": [
     "automation"

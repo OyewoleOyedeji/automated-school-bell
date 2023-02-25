@@ -12,13 +12,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - uses: ilammy/msvc-dev-cmd@v1
       - name: Use Node.js 12
         uses: actions/setup-node@v3
         with:
           node-version: 12
       - run: npm install
       - run: npm run build:windows
-      - run: npm run pkg -t node12-win --out-path dist main.js
 
   build-linux:
     runs-on: ubuntu-latest

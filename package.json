@@ -6,7 +6,7 @@
   "scripts": {
     "start": "tsc && node main.js",
     "dev": "tsc --watch",
-    "build:windows": "tsc",
+    "build:windows": "tsc && pkg -t node12-win --out-path dist main.js",
     "build:linux": "tsc && pkg -t node12-linux --out-path dist main.js"
   },
   "keywords": [

@@ -33,5 +33,6 @@ jobs:
         with:
           node-version: 12
       - run: npm install -g pnpm@5
+      - run: pnpm install
       - run: pnpm run build
       - run: pnpm run pkg -t node12-linux --out-path dist main.js

@@ -13,11 +13,15 @@
   "author": "OyewoleOyedeji",
   "license": "ISC",
   "dependencies": {
+    "@suldashi/lame": "^1.2.5",
     "date-fns": "^2.29.3",
-    "play-sound": "^1.1.5"
+    "speaker": "^0.5.4"
   },
-  "devDependencies": {
+  "optionalDependencies": {
     "@types/node": "^18.11.18",
     "@types/play-sound": "^1.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.5"
   }
 }

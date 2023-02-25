@@ -4,10 +4,9 @@ import {
   differenceInMilliseconds,
   setSeconds,
 } from "date-fns";
-import { readFileSync, existsSync, writeFileSync } from "fs";
+import { readFileSync, existsSync, writeFileSync, createReadStream } from "fs";
 import { resolve, isAbsolute } from "path";
 import { exit } from "process";
-import player from "play-sound";
 
 let times: string[] = [];
 let notificationSoundPath: string;
@@ -80,9 +79,9 @@ class Runtime {
     }
   }
   times: {
-    considered: Array<number>;
-    raw: Array<number>;
-    done: Array<number>;
+    considered: number[];
+    raw: number[];
+    done: number[];
   } = {
     considered: [],
     raw: [],
@@ -101,7 +100,13 @@ const runtime = new Runtime();
  * Note: this method cleans up `Runtime` of unneeded variables
  */
 const postWait = () => {
-  player().play(notificationSoundPath);
+  const lame = require("@suldashi/lame");
+  const Speaker = require("speaker");
+
+  // Play the notification sound
+  createReadStream(notificationSoundPath)
+    .pipe(new lame.Decoder())
+    .pipe(new Speaker());
 
   if (runtime.times.considered.length === 0) {
     ["startupTime", "times", "status"].forEach((key) =>

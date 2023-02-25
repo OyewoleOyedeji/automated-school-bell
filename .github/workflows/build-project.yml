@@ -17,7 +17,6 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: 12
-    - run: npm install -g windows-build-tools
     - run: npm install
     - run: npm run build
     - run: npm run pkg -t node12-win --out-path dist main.js

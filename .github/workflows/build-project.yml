@@ -1,0 +1,36 @@
+name: Build project
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ilammy/msvc-dev-cmd@v1
+      
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 12
+      - run: npm install
+      - run: npm run build:windows
+
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install libasound2-dev
+        run: sudo apt-get install libasound2-dev
+      - name: Use Node.js 12
+        uses: actions/setup-node@v3
+        with:
+          node-version: 12
+      - run: npm install -g pnpm@5
+      - run: pnpm install
+      - run: pnpm build:linux

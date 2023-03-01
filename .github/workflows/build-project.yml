@@ -39,5 +39,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 12
-      - run: npm install
-      - run: npm run build:linux
+      - run: npm install -g pnpm@5
+      - run: pnpm install
+      - run: pnpm build:linux
